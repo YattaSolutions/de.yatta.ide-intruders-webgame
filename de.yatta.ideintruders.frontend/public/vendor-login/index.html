@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login Page</title>
+    <style>
+      body {
+        background-color: #f2f2f2;
+        font-family: Arial, sans-serif;
+      }
+      form {
+        width: 300px;
+        margin: 50px auto;
+        background-color: #fff;
+        border-radius: 5px;
+        padding: 20px 20px 60px 20px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+      }
+      label {
+        display: block;
+        margin-bottom: 10px;
+      }
+      input[type='text'],
+      input[type='password'] {
+        width: 100%;
+        padding: 10px;
+        border-radius: 3px;
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+      input[type='submit'] {
+        background-color: #4caf50;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      input[type='submit']:hover {
+        background-color: #3e8e41;
+      }
+      a {
+        padding: 30px 0px;
+        float: right;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="login-form" action="process-login.php" method="post">
+      <h1>Login</h1>
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" />
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" />
+
+      <input type="submit" value="Login" />
+      <input type="submit" value="Login with Yatta" />
+      <a href="../ide-intruders/index_no_iam.html">Use Yatta IAM</a>
+    </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+      // Get the login form element
+      const loginForm = document.getElementById('login-form');
+
+      // Attach a submit event listener to the form
+      loginForm.addEventListener('submit', function (event) {
+        // Prevent the default form submission behavior
+        event.preventDefault();
+
+        // Get the username input value
+        const username = document.getElementById('username').value;
+
+        // Save the username to local storage
+        localStorage.setItem('username', username);
+
+        // Calculate the SHA-256 hash of the username
+        const hash = CryptoJS.SHA256(username).toString();
+
+        // Save the hashed username to local storage
+        localStorage.setItem('userid', hash);
+
+        // Navigate to the dashboard page
+        window.location.href = '../welcome/';
+      });
+    </script>
+  </body>
+</html>

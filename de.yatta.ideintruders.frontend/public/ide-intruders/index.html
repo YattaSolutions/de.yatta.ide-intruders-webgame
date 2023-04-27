@@ -1,0 +1,129 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link href="css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <script src="js/ide_intruders.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <!-- script src="../checkout-drop-in.umd.min.js"></script -->
+    <script src="https://stage.platform.yatta.de/app/checkout/v1/drop-in.min.js"></script>
+    <!-- <script src="https://www.yatta.de/checkout/v1/drop-in.min.js"></script> -->
+    <!-- -->
+    <script>
+      yatta.setPlatformEnvironment('stage');
+    </script>
+    <!-- -->
+    <script>
+      const currentUserId = localStorage.getItem('userid');
+      const emailHint = localStorage.getItem('username');
+      // const productId = 'de.softwarevendor.product';
+      const productId = 'c1bae4a0-3b25-45bf-9d3f-994631dec3cc';
+      // const productId = '330da901-e116-4ca2-a301-2903552bf51d';
+
+      const queryLicense = async userId => {
+        const response = await fetch('http://localhost:8080/queryLicense?userId=' + userId);
+        const hasLicense = await response.json();
+        if (response.status == 200 && hasLicense) {
+          // hideOverlay
+          document.getElementById('game').style.display = 'block';
+          document.getElementById('start-page').style.display = 'none';
+          // start game
+          init();
+          animate();
+        } else {
+          // showOverlay
+          document.getElementById('game').style.display = 'none';
+          document.getElementById('start-page').style.display = 'block';
+        }
+      };
+      yatta.onSignedInChange(function (signedIn) {
+        if (signedIn === true) {
+          document.getElementById('sign-in-btn').style.visibility = 'hidden';
+          document.getElementById('sign-out-btn').style.visibility = 'visible';
+          yatta.linkAccount(currentUserId);
+        } else {
+          document.getElementById('sign-in-btn').style.visibility = 'visible';
+          document.getElementById('sign-out-btn').style.visibility = 'hidden';
+        }
+        queryLicense(currentUserId);
+      });
+      yatta.onAssetStatusChange(
+        productId,
+        function (assetStatus) {
+          queryLicense(currentUserId);
+        },
+        'preview'
+      );
+    </script>
+    <div id="game" style="display: none">
+      <canvas id="game-canvas" width="640" height="640"></canvas>
+      <div class="vendor-panel" id="vendor-panel">
+        <div class="left-content">
+          <p class="vendor-panel-header">Congratulations, you got an IDE Intruders license using Yatta Checkout!</p>
+          <div class="content">
+            <p class="hide-on-collapse pt-2">It's easy to integrate the Checkout into your own Eclipse product, tool or solution.</p>
+            <p class="hide-on-collapse">
+              If you have any questions, please
+              <a href="mailto:checkout@yatta.de">contact us</a>. We are happy to help.
+            </p>
+          </div>
+        </div>
+        <div class="vendor-panel-separator"></div>
+        <div class="right-content">
+          <a class="toggle-button">
+            <img src="img/chevron-down.svg" width="16" height="16" alt="Toggle Banner" />
+          </a>
+          <div class="hide-on-collapse">
+            <a href="https://www.yatta.de/portal" class="start-integration"
+              >Start integration
+              <img src="img/link-external-light.svg" />
+            </a>
+            <button
+              type="button"
+              class="reset-demo"
+              onclick="yatta.startCheckout(productId, {environment: 'preview', manageAssetHint: true, start: {type: 'subscription', subscriptionInterval: 'monthly' }});">
+              Manage demo
+            </button>
+            <!-- button type="button" class="reset-demo" onclick="yatta.signOut();">Reset demo</button -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="start-page">
+      <div class="start-page">
+        <h1>IDE Intruders</h1>
+        <h2>Fight the bugs!</h2>
+        <div>
+          <button
+            type="button"
+            class="trigger-subscribe"
+            onclick="yatta.startCheckout(productId, {environment: 'preview', start: {type: 'subscription', subscriptionInterval: 'monthly' }, authenticationParams: {emailHint: emailHint}});">
+            Subscribe&nbsp;(demo)
+          </button>
+          <!-- button type="button" class="trigger-purchase" onclick="yatta.startCheckout('de.softwarevendor.product.onetimepurchase', {environment: 'preview'});">
+            Buy&nbsp;(demo)
+          </button -->
+        </div>
+        <button id="sign-in-btn" type="button" class="trigger-sign-in" onclick="yatta.signIn({emailHint: emailHint});">Sign in</button>
+        <button id="sign-out-btn" type="button" class="trigger-sign-in" style="visibility: hidden" onclick="yatta.signOut();">Sign out</button>
+        <!-- <img src="img/bug-teaser.png" /> -->
+        <img width="380px" src="img/bugs.gif" />
+        <div class="spacing"></div>
+      </div>
+      <div class="start-page-footer">
+        <p>Note: The Yatta Checkout demo uses test data for payment and billing—no real transactions take place.</p>
+      </div>
+    </div>
+
+    <script>
+      const toggleButton = document.querySelector('.toggle-button');
+      const banner = document.querySelector('.vendor-panel');
+
+      toggleButton.addEventListener('click', function () {
+        banner.classList.toggle('collapsed');
+      });
+    </script>
+  </body>
+</html>
