@@ -19,7 +19,7 @@ public class SecurityConfig
    @Bean
    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception
    {
-      String defaultUrl = "http://localhost:62348/ide-intruders/index.html";
+      String defaultUrl = "http://localhost:62348/ide-intruders/index_no_iam.html";
       String defaultLogoutUrl = "http://localhost:62348/vendor-login/";
 
       httpSecurity.authorizeHttpRequests()

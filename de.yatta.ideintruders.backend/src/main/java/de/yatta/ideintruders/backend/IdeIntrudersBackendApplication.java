@@ -1,6 +1,7 @@
 package de.yatta.ideintruders.backend;
 
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -27,6 +28,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 public class IdeIntrudersBackendApplication
 {
+   @Value("${yatta.license.endpoint}")
+   private String licenseEndpoint;
+   
+   @Value("${yatta.product_id.vendor_iam}")
+   private String productIdVendorIAM;
+
+   @Value("${yatta.product_id.yatta_iam}")
+   private String productIdYattaIAM;
 
    public static void main(String[] args)
    {
@@ -39,6 +48,8 @@ public class IdeIntrudersBackendApplication
          @RequestParam(value = "sessionToken", required = false) String sessionToken)
          throws JsonMappingException, JsonProcessingException
    {
+      String productId = userId == null ? productIdYattaIAM : productIdVendorIAM;
+
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
       if (authentication instanceof OAuth2AuthenticationToken)
       {
@@ -46,13 +57,6 @@ public class IdeIntrudersBackendApplication
          userId = token.getName();
          sessionToken = "OAUTH";
       }
-
-      //String url = "http://localhost:8013/chckout/v1/vendor/license/checkout";
-      String url = "https://stage.platform.yatta.de/checkout/v1/vendor/license/checkout";
-      // String url = "https://www.yatta.de/checkout/v1/vendor/license/checkout";
-      // String productId = "de.softwarevendor.product";
-      String productId = "577a4546-dc60-41a9-a8ca-3929a055213a"; // "c1bae4a0-3b25-45bf-9d3f-994631dec3cc";
-      //String productId = "330da901-e116-4ca2-a301-2903552bf51d";
 
       HttpHeaders headers = new HttpHeaders();
       headers.setContentType(MediaType.APPLICATION_JSON);
@@ -73,7 +77,7 @@ public class IdeIntrudersBackendApplication
       String result;
       try
       {
-         result = restTemplate.postForObject(url, request, String.class);
+         result = restTemplate.postForObject(licenseEndpoint, request, String.class);
       }
       catch (RestClientException e)
       {
