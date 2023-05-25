@@ -2,6 +2,7 @@ package de.yatta.ideintruders.backend;
 
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,20 +16,25 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SecurityConfig
 {
+   @Value("${server.servlet.session.cookie.name}")
+   private String cookieName;
 
    @Bean
    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception
    {
       String defaultUrl = "http://localhost:62348/ide-intruders/index_no_iam.html";
-      String defaultLogoutUrl = "http://localhost:62348/vendor-login/";
+      String defaultLoginUrl = "http://localhost:62348/vendor-login/";
 
-      httpSecurity.authorizeHttpRequests()
-            .requestMatchers("/public", "/queryLicense").permitAll()
-            .anyRequest().authenticated()
-            .and()
+      httpSecurity
+            .authorizeHttpRequests(requestMatcher -> requestMatcher
+                  .requestMatchers("/public", "/queryLicense", "/login").permitAll()
+                  .anyRequest().authenticated())
             .cors().and()
-            .oauth2Login().defaultSuccessUrl(defaultUrl).and()
-            .logout(logout -> logout.logoutSuccessUrl(defaultLogoutUrl));
+            .csrf().disable()
+            .oauth2Login(config -> config
+                  .defaultSuccessUrl(defaultUrl).loginPage(defaultLoginUrl).isCustomLoginPage())
+            .logout(logout -> logout
+                  .logoutSuccessUrl(defaultLoginUrl).permitAll().deleteCookies(cookieName));
 
       return httpSecurity.build();
    }
@@ -45,5 +51,4 @@ public class SecurityConfig
       source.registerCorsConfiguration("/**", configuration);
       return source;
    }
-
 }
