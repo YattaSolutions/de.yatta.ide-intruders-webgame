@@ -89,7 +89,8 @@
               Manage demo
             </button>
             <!-- button type="button" class="reset-demo" onclick="yatta.signOut();">Reset demo</button -->
-            <button type="button" class="reset-demo" onclick="window.location.href='http://localhost:8080/logout'">Logout</button>
+            <button type="button" class="reset-demo" onclick="document.getElementById('form-logout').submit();">Logout</button>
+            <form id="form-logout" style="display: none" action="http://localhost:8080/logout" method="POST"></form>
           </div>
         </div>
       </div>
