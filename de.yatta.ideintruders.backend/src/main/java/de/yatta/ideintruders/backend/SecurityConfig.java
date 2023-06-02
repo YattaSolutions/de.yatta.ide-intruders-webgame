@@ -32,9 +32,13 @@ public class SecurityConfig
             .cors().and()
             .csrf().disable()
             .oauth2Login(config -> config
-                  .defaultSuccessUrl(defaultUrl).loginPage(defaultLoginUrl).isCustomLoginPage())
+                  .defaultSuccessUrl(defaultUrl)
+                  .loginPage(defaultLoginUrl)
+                  .isCustomLoginPage())
             .logout(logout -> logout
-                  .logoutSuccessUrl(defaultLoginUrl).permitAll().deleteCookies(cookieName));
+                  .logoutSuccessUrl(defaultLoginUrl)
+                  .permitAll()
+                  .deleteCookies(cookieName));
 
       return httpSecurity.build();
    }
