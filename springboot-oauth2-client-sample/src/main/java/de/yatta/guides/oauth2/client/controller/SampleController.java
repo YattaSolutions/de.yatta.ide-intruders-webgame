@@ -36,6 +36,6 @@ public class SampleController {
 
         var accessToken = client.getAccessToken().getTokenValue();
         log.info(accessToken);
-        return ResponseEntity.ok("Sample page - access token: " + accessToken);
+        return ResponseEntity.ok(accessToken);
     }
 }
