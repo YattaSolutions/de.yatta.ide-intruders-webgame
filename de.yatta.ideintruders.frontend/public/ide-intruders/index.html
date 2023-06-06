@@ -6,7 +6,7 @@
   </head>
 
   <body>
-    <!-- script src="../checkout-drop-in.umd.min.js"></script -->
+    <!-- <script src="../checkout-drop-in.umd.min.js"></script> -->
     <script src="https://stage.platform.yatta.de/app/checkout/v1/drop-in.min.js"></script>
     <!-- <script src="https://www.yatta.de/checkout/v1/drop-in.min.js"></script> -->
     <!-- -->
@@ -22,7 +22,7 @@
       // const productId = '330da901-e116-4ca2-a301-2903552bf51d';
 
       const queryLicense = async userId => {
-        const response = await fetch('http://localhost:8080/queryLicense?userId=' + userId);
+        const response = await fetch('http://localhost:8080/queryLicense?userId=' + userId, { credentials: 'include' });
         const hasLicense = await response.json();
         if (response.status == 200 && hasLicense) {
           // hideOverlay
@@ -86,6 +86,7 @@
               Manage demo
             </button>
             <!-- button type="button" class="reset-demo" onclick="yatta.signOut();">Reset demo</button -->
+            <button type="button" class="reset-demo" onclick="window.location.href='http://localhost:8080/logout'">Logout</button>
           </div>
         </div>
       </div>

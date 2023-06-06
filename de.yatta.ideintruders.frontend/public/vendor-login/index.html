@@ -101,12 +101,8 @@
 
       // Attach a click event listener to the button
       yattaButton.addEventListener("click", function (event) {
-        // Open a new browser window with the Yatta login page
-        window.open(
-          "https://stage.platform.yatta.de/auth",
-          "_blank",
-          "width=600,height=900"
-        );
+        let url = "http://localhost:8080/oauth2/authorization/yatta";
+        window.location.href = url;
       });
     </script>
   </body>
