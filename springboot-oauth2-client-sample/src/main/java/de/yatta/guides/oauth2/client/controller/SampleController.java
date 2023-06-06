@@ -35,7 +35,13 @@ public class SampleController {
                         oauthToken.getName());
 
         var accessToken = client.getAccessToken().getTokenValue();
-        log.info(accessToken);
-        return ResponseEntity.ok(accessToken);
+        log.info(oauthToken.toString());
+        log.info(client.toString());
+        String response =
+                String.format("User ID: %s <br> User Email Address: %s <br> User Access Token: %s ",
+                        oauthToken.getPrincipal().getName(),
+                        oauthToken.getPrincipal().getAttributes().get("email"),
+                        client.getAccessToken().getTokenValue());
+        return ResponseEntity.ok(response);
     }
 }
