@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Result Page</title>
+    <style>
+      svg {
+        display: none;
+        margin: auto;
+      }
+
+      .result {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        color: #fff;
+        transform: translate(-50%, -50%);
+        font-family: Verdana, Tahoma, sans-serif;
+        font-size: 14px;
+        line-height: 20px;
+        color: #333;
+        text-align: center;
+        width: 100%;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      #successIcon path {
+        fill: #8dc411;
+      }
+
+      #errorIcon path {
+        fill: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="result">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" id="successIcon">
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10zm5-14c-.28 0-.53.11-.71.29L10 14.59l-2.29-2.3a1.003 1.003 0 00-1.42 1.42l3 3c.18.18.43.29.71.29.28 0 .53-.11.71-.29l7-7A1.003 1.003 0 0017 8z"
+          fill="#909090" />
+      </svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" id="errorIcon">
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm4 5c-.28 0-.53.11-.71.29L12 10.59l-3.29-3.3a1.003 1.003 0 00-1.42 1.42l3.3 3.29-3.29 3.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71l3.29-3.3 3.29 3.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71L13.41 12l3.29-3.29c.19-.18.3-.43.3-.71 0-.55-.45-1-1-1z"
+          fill="#909090" />
+      </svg>
+      <h1 id="title"></h1>
+      <p id="description"></p>
+    </div>
+
+    <script>
+      if (window.location.href.includes('error')) {
+        document.getElementById('title').innerText = 'Authorization failed';
+        document.getElementById('description').innerText = 'Please close this window and start over. ';
+        document.getElementById('errorIcon').style.display = 'block';
+      } else {
+        document.getElementById('title').innerText = 'Authorization successful';
+        document.getElementById('description').innerText = 'You are all set and you can now close this window.';
+        document.getElementById('successIcon').style.display = 'block';
+      }
+    </script>
+  </body>
+</html>

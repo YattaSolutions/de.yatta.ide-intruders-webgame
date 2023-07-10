@@ -22,7 +22,7 @@ public class SecurityConfig
    @Bean
    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception
    {
-      String defaultUrl = "http://localhost:62348/ide-intruders/index_no_iam.html";
+      String resultUrl = "http://localhost:62348/ide-intruders/result.html";
       String defaultLoginUrl = "http://localhost:62348/vendor-login/";
 
       httpSecurity
@@ -32,7 +32,8 @@ public class SecurityConfig
             .cors().and()
             .csrf().disable()
             .oauth2Login(config -> config
-                  .defaultSuccessUrl(defaultUrl)
+                  .defaultSuccessUrl(resultUrl)
+                  .failureUrl(resultUrl + "?error") 
                   .loginPage(defaultLoginUrl)
                   .isCustomLoginPage())
             .logout(logout -> logout

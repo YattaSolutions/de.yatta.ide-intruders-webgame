@@ -22,8 +22,8 @@
         display: block;
         margin-bottom: 10px;
       }
-      input[type="text"],
-      input[type="password"] {
+      input[type='text'],
+      input[type='password'] {
         width: 100%;
         padding: 10px;
         border-radius: 3px;
@@ -32,8 +32,8 @@
         box-sizing: border-box;
         font-size: 16px;
       }
-      input[type="submit"],
-      button[type="button"] {
+      input[type='submit'],
+      button[type='button'] {
         background-color: #4caf50;
         color: #fff;
         padding: 10px 20px;
@@ -42,8 +42,8 @@
         cursor: pointer;
         font-size: 16px;
       }
-      input[type="submit"]:hover,
-      button[type="button"]:hover {
+      input[type='submit']:hover,
+      button[type='button']:hover {
         background-color: #3e8e41;
       }
       a {
@@ -73,36 +73,49 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
       // Get the login form element
-      const loginForm = document.getElementById("login-form");
+      const loginForm = document.getElementById('login-form');
 
       // Attach a submit event listener to the form
-      loginForm.addEventListener("submit", function (event) {
+      loginForm.addEventListener('submit', function (event) {
         // Prevent the default form submission behavior
         event.preventDefault();
 
         // Get the username input value
-        const username = document.getElementById("username").value;
+        const username = document.getElementById('username').value;
 
         // Save the username to local storage
-        localStorage.setItem("username", username);
+        localStorage.setItem('username', username);
 
         // Calculate the SHA-256 hash of the username
         const hash = CryptoJS.SHA256(username).toString();
 
         // Save the hashed username to local storage
-        localStorage.setItem("userid", hash);
+        localStorage.setItem('userid', hash);
 
         // Navigate to the dashboard page
-        window.location.href = "../welcome/";
+        window.location.href = '../welcome/';
       });
 
       // Get the Yatta button element
-      const yattaButton = document.getElementById("yatta-button");
+      const yattaButton = document.getElementById('yatta-button');
 
+      const defaultUrl = '../ide-intruders/index_no_iam.html';
       // Attach a click event listener to the button
-      yattaButton.addEventListener("click", function (event) {
-        let url = "http://localhost:8080/oauth2/authorization/yatta";
-        window.location.href = url;
+      yattaButton.addEventListener('click', function (event) {
+        const url = 'http://localhost:8080/oauth2/authorization/yatta';
+        const childWindow = window.open(url, '_blank', 'width=600,height=770,location=no,dependent=yes');
+
+        const interval = setInterval(() => {
+          try {
+            if (childWindow && childWindow.closed) {
+              clearInterval(interval);
+            } else if (!childWindow.location.href.includes('error')) {
+              childWindow.close();
+              window.location.href = defaultUrl;
+              clearInterval(interval);
+            }
+          } catch (x) {}
+        }, 1000);
       });
     </script>
   </body>
