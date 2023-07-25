@@ -60,7 +60,7 @@ public class IdeIntrudersBackendApplication
 
       HttpHeaders headers = new HttpHeaders();
       headers.setContentType(MediaType.APPLICATION_JSON);
-      headers.setBasicAuth(productId, "DEMO");
+      headers.setBasicAuth(productId, "9Hlls9YqheoqVrccPzs63w3a2qlwGKNv");
 
       JSONObject jsonObject = new JSONObject();
       jsonObject.put("environment", "preview");
@@ -81,7 +81,7 @@ public class IdeIntrudersBackendApplication
       }
       catch (RestClientException e)
       {
-         System.out.println("Not Found");
+         System.out.println("Not Found: " + e.getMessage());
          return false;
       }
       ObjectMapper mapper = new ObjectMapper();

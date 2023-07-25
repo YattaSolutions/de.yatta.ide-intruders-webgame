@@ -6,14 +6,10 @@
   </head>
 
   <body>
-    <!-- <script src="../checkout-drop-in.umd.min.js"></script> -->
+    <!-- <script src="http://localhost:62345/checkout-drop-in"></script> -->
+    <!-- <script src="../checkout-drop-in.min.js"></script> -->
     <script src="https://stage.platform.yatta.de/app/checkout/v1/drop-in.min.js"></script>
     <!-- <script src="https://www.yatta.de/checkout/v1/drop-in.min.js"></script> -->
-    <!-- -->
-    <script>
-      yatta.setPlatformEnvironment('stage');
-    </script>
-    <!-- -->
     <script>
       let currentSessionToken = null;
       const emailHint = undefined;
@@ -88,8 +84,7 @@
               onclick="yatta.startCheckout(productId, {environment: 'preview', manageAssetHint: true, start: {type: 'subscription', subscriptionInterval: 'monthly' }});">
               Manage demo
             </button>
-            <!-- button type="button" class="reset-demo" onclick="yatta.signOut();">Reset demo</button -->
-            <button type="button" class="reset-demo" onclick="document.getElementById('form-logout').submit();">Logout</button>
+            <button type="button" class="reset-demo" onclick="yatta.signOut();document.getElementById('form-logout').submit();">Logout</button>
             <form id="form-logout" style="display: none" action="http://localhost:8080/logout" method="POST"></form>
           </div>
         </div>
@@ -112,7 +107,14 @@
           </button -->
         </div>
         <button id="sign-in-btn" type="button" class="trigger-sign-in" onclick="yatta.signIn({emailHint: emailHint});">Sign in</button>
-        <button id="sign-out-btn" type="button" class="trigger-sign-in" style="visibility: hidden" onclick="yatta.signOut();">Sign out</button>
+        <button
+          id="sign-out-btn"
+          type="button"
+          class="trigger-sign-in"
+          style="visibility: hidden"
+          onclick="yatta.signOut();document.getElementById('form-logout').submit();">
+          Sign out
+        </button>
         <!-- <img src="img/bug-teaser.png" /> -->
         <img width="380px" src="img/bugs.gif" />
         <div class="spacing"></div>
