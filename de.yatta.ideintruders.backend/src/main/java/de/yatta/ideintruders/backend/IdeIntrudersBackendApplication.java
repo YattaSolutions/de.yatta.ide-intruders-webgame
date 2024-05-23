@@ -19,7 +19,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -37,6 +36,9 @@ public class IdeIntrudersBackendApplication
    @Value("${yatta.product_id.yatta_iam}")
    private String productIdYattaIAM;
 
+   @Value("${yatta.vendor.api_key}")
+   private String vendorApiKey;
+
    public static void main(String[] args)
    {
       SpringApplication.run(IdeIntrudersBackendApplication.class, args);
@@ -44,23 +46,20 @@ public class IdeIntrudersBackendApplication
 
    @GetMapping("/queryLicense")
    @CrossOrigin(origins = "*")
-   public boolean queryLicense(@RequestParam(value = "userId", required = false) String userId,
-         @RequestParam(value = "sessionToken", required = false) String sessionToken)
-         throws JsonMappingException, JsonProcessingException
+   public boolean queryLicense(@RequestParam(value = "userId", required = false) String userId)
+         throws JsonProcessingException
    {
       String productId = userId == null ? productIdYattaIAM : productIdVendorIAM;
 
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-      if (authentication instanceof OAuth2AuthenticationToken)
+      if (authentication instanceof OAuth2AuthenticationToken token)
       {
-         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken)authentication;
          userId = token.getName();
-         sessionToken = "OAUTH";
       }
 
       HttpHeaders headers = new HttpHeaders();
       headers.setContentType(MediaType.APPLICATION_JSON);
-      headers.setBasicAuth(productId, "9Hlls9YqheoqVrccPzs63w3a2qlwGKNv");
+      headers.setBasicAuth(productId, vendorApiKey);
 
       JSONObject jsonObject = new JSONObject();
       jsonObject.put("environment", "preview");
@@ -68,7 +67,6 @@ public class IdeIntrudersBackendApplication
       //jsonObject.put("featureId", "de.softwarevendor.product");
       //jsonObject.put("version", "1.0.0");
       jsonObject.put("accountId", userId);
-      jsonObject.put("sessionToken", sessionToken);
       jsonObject.put("durationMinutes", 120);
 
       HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
