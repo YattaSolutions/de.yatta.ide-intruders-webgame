@@ -109,7 +109,7 @@
           try {
             if (childWindow && childWindow.closed) {
               clearInterval(interval);
-            } else if (!childWindow.location.href.includes('error')) {
+            } else if (childWindow.location.href.endsWith('/result.html')) {
               childWindow.close();
               window.location.href = defaultUrl;
               clearInterval(interval);
