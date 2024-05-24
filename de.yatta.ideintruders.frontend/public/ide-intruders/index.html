@@ -12,6 +12,8 @@
     <script>
       const currentUserId = localStorage.getItem('userid');
       const emailHint = localStorage.getItem('username');
+      yatta.linkAccount({ accountId: currentUserId, email: emailHint });
+
       // const productId = 'de.softwarevendor.product';
       const productId = 'c1bae4a0-3b25-45bf-9d3f-994631dec3cc';
       // const productId = '330da901-e116-4ca2-a301-2903552bf51d';
@@ -36,7 +38,6 @@
         if (signedIn === true) {
           document.getElementById('sign-in-btn').style.visibility = 'hidden';
           document.getElementById('sign-out-btn').style.visibility = 'visible';
-          yatta.linkAccount(currentUserId);
         } else {
           document.getElementById('sign-in-btn').style.visibility = 'visible';
           document.getElementById('sign-out-btn').style.visibility = 'hidden';
