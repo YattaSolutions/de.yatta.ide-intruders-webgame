@@ -29,12 +29,6 @@ public class IdeIntrudersBackendApplication
 {
    @Value("${yatta.license.endpoint}")
    private String licenseEndpoint;
-   
-   @Value("${yatta.product_id.vendor_iam}")
-   private String productIdVendorIAM;
-
-   @Value("${yatta.product_id.yatta_iam}")
-   private String productIdYattaIAM;
 
    @Value("${yatta.vendor.api_key}")
    private String vendorApiKey;
@@ -46,11 +40,9 @@ public class IdeIntrudersBackendApplication
 
    @GetMapping("/queryLicense")
    @CrossOrigin(origins = "*")
-   public boolean queryLicense(@RequestParam(value = "userId", required = false) String userId)
+   public boolean queryLicense(@RequestParam(value = "userId", required = false) String userId, @RequestParam(value = "productId", required = true) String productId)
          throws JsonProcessingException
    {
-      String productId = userId == null ? productIdYattaIAM : productIdVendorIAM;
-
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
       if (authentication instanceof OAuth2AuthenticationToken token)
       {

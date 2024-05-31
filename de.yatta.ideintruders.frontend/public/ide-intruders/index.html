@@ -19,7 +19,7 @@
       // const productId = '330da901-e116-4ca2-a301-2903552bf51d';
 
       const queryLicense = async userId => {
-        const response = await fetch('http://localhost:8080/queryLicense?userId=' + userId, { credentials: 'include' });
+        const response = await fetch('http://localhost:8080/queryLicense?userId=' + userId + '&productId=' + productId, { credentials: 'include' });
         const hasLicense = await response.json();
         if (response.status == 200 && hasLicense) {
           // hideOverlay
