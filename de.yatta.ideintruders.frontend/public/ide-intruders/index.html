@@ -6,16 +6,16 @@
   </head>
 
   <body>
-    <script src="http://localhost:7666/checkout-drop-in"></script>
+    <!-- <script src="http://localhost:7666/checkout-drop-in"></script> -->
     <!-- <script src="https://stage.platform.yatta.de/app/checkout/v1/drop-in.min.js"></script> -->
-    <!-- <script src="https://yatta.de/checkout/v1/drop-in.min.js"></script> -->
+    <script src="https://yatta.de/checkout/v1/drop-in.min.js"></script>
     <script>
-      let currentUserId = localStorage.getItem('userid');
+      const currentUserId = localStorage.getItem('userid');
       const emailHint = localStorage.getItem('username');
       yatta.linkAccount({ accountId: currentUserId, email: emailHint });
 
-      const productId = 'de.softwarevendor.product';
-      // const productId = 'c1bae4a0-3b25-45bf-9d3f-994631dec3cc';
+      // const productId = 'de.softwarevendor.product';
+      const productId = 'c1bae4a0-3b25-45bf-9d3f-994631dec3cc';
       // const productId = '330da901-e116-4ca2-a301-2903552bf51d';
 
       const queryLicense = async sessionToken => {
