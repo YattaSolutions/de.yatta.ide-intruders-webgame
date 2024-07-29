@@ -26,74 +26,83 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
 @SpringBootApplication
-@ComponentScan(basePackageClasses = {SecurityConfig.class})
+@ComponentScan(basePackageClasses = { SecurityConfig.class })
 @RestController
-public class IdeIntrudersBackendApplication {
-    @Value("${yatta.license.endpoint}")
-    private String licenseEndpoint;
+public class IdeIntrudersBackendApplication
+{
+   @Value("${yatta.license.endpoint}")
+   private String licenseEndpoint;
 
-    @Value("${yatta.jwks.endpoint}")
-    private String jwksEndpoint;
+   @Value("${yatta.jwks.endpoint}")
+   private String jwksEndpoint;
 
-    @Value("${yatta.vendor.api_key}")
-    private String vendorApiKey;
+   @Value("${yatta.vendor.api_key}")
+   private String vendorApiKey;
 
-    public static void main(String[] args) {
-        SpringApplication.run(IdeIntrudersBackendApplication.class, args);
-    }
+   public static void main(String[] args)
+   {
+      SpringApplication.run(IdeIntrudersBackendApplication.class, args);
+   }
 
-    @GetMapping("/queryLicense")
-    @CrossOrigin(origins = "*")
-    public boolean queryLicense(@RequestParam(value = "sessionToken", required = false) String sessionToken, @RequestParam(value = "productId") String productId)
-            throws JsonProcessingException {
+   @GetMapping("/queryLicense")
+   @CrossOrigin(origins = "*")
+   public boolean queryLicense(@RequestParam(value = "sessionToken", required = false) String sessionToken, @RequestParam(value = "productId") String productId)
+         throws JsonProcessingException
+   {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        String accountId;
+      String accountId;
 
-        if (authentication instanceof OAuth2AuthenticationToken token) {
-            accountId = token.getName();
-        } else {
-            var jwt = getDecodedJwt(sessionToken);
-            accountId = jwt.getSubject();
-            productId = jwt.getClaimAsString("productId");
-        }
+      if (authentication instanceof OAuth2AuthenticationToken token)
+      {
+         accountId = token.getName();
+      }
+      else
+      {
+         var jwt = getDecodedJwt(sessionToken);
+         accountId = jwt.getSubject();
+         productId = jwt.getClaimAsString("productId");
+      }
 
-        RestTemplate restTemplate = new RestTemplate();
+      RestTemplate restTemplate = new RestTemplate();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBasicAuth(productId, vendorApiKey);
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_JSON);
+      headers.setBasicAuth(productId, vendorApiKey);
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("environment", "preview");
-        jsonObject.put("productId", productId);
-        //jsonObject.put("featureId", "de.softwarevendor.product");
-        //jsonObject.put("version", "1.0.0");
-        jsonObject.put("accountId", accountId);
-        jsonObject.put("durationMinutes", 120);
+      JSONObject jsonObject = new JSONObject();
+      jsonObject.put("environment", "preview");
+      jsonObject.put("productId", productId);
+      //jsonObject.put("featureId", "de.softwarevendor.product");
+      //jsonObject.put("version", "1.0.0");
+      jsonObject.put("accountId", accountId);
+      jsonObject.put("durationMinutes", 120);
 
-        HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
+      HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
 
+      String result;
+      try
+      {
+         result = restTemplate.postForObject(licenseEndpoint, request, String.class);
+      }
+      catch (RestClientException e)
+      {
+         System.out.println("Not Found: " + e.getMessage());
+         return false;
+      }
+      ObjectMapper mapper = new ObjectMapper();
+      JsonNode tree = mapper.readTree(result);
 
-        String result;
-        try {
-            result = restTemplate.postForObject(licenseEndpoint, request, String.class);
-        } catch (RestClientException e) {
-            System.out.println("Not Found: " + e.getMessage());
-            return false;
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode tree = mapper.readTree(result);
+      System.out.println(tree.get("validity").asText());
 
-        System.out.println(tree.get("validity").asText());
+      return tree.get("validity").asText().equals("LICENSED");
+   }
 
-        return tree.get("validity").asText().equals("LICENSED");
-    }
+   private Jwt getDecodedJwt(String sessionToken)
+   {
+      var jwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwksEndpoint).build();
 
-    private Jwt getDecodedJwt(String sessionToken) {
-        var jwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwksEndpoint).build();
-
-        return jwtDecoder.decode(sessionToken);
-    }
+      return jwtDecoder.decode(sessionToken);
+   }
 }
