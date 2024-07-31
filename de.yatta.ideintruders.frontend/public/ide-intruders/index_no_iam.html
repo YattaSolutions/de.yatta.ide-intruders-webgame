@@ -17,7 +17,13 @@
       // const productId = '58bc1f15-c735-48ec-8438-1c26d9d27fe5';
 
       const queryLicense = async sessionToken => {
-        const response = await fetch('http://localhost:8080/queryLicense?sessionToken=' + sessionToken + '&productId=' + productId, { credentials: 'include' });
+        const response = await fetch('http://localhost:8080/queryLicenseSession', {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body : JSON.stringify({sessionToken: sessionToken, productId: productId}),
+          credentials: 'include' });
         const hasLicense = await response.json();
         if (response.status == 200 && hasLicense) {
           // hideOverlay
@@ -45,12 +51,16 @@
 
       yatta.onCheckoutSessionChange(productId, function (checkoutSession) {
         if (checkoutSession && checkoutSession.sessionToken) {
-          currentUserId = checkoutSession.sessionToken;
-          queryLicense(sessionToken);
+          queryLicense(checkoutSession.sessionToken);
         }
       });
 
-      yatta.onAssetStatusChange(productId, function (assetStatus) {}, 'preview');
+      yatta.onAssetStatusChange(productId, function (assetStatus) {
+        if(sessionToken) {
+          console.log(sessionToken);
+          queryLicense(sessionToken);
+        }
+      }, 'preview');
     </script>
     <div id="game" style="display: none">
       <canvas id="game-canvas" width="640" height="640"></canvas>
