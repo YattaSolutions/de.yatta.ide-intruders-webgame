@@ -12,10 +12,16 @@
     <script>
       let sessionToken = null;
       const emailHint = undefined;
-      // const productId = 'de.softwarevendor.product';
-      const productId = '58bc1f15-c735-48ec-8438-1c26d9d27fe5';
 
-      const queryLicense = async sessionToken => {
+      const vendorId = '9dcaeab8-f260-43cc-ab76-4711426db20e';
+      const productId = '58bc1f15-c735-48ec-8438-1c26d9d27fe5';
+      
+      // staging
+      // const vendorId = 'ad9b3f20-6c14-490d-9e57-0a705c29b9ef';
+      // const productId = '577a4546-dc60-41a9-a8ca-3929a055213a';
+
+      const queryLicense = async newToken => {
+        sessionToken = newToken;
         const response = await fetch('http://localhost:8080/queryLicenseSession', {
           method: "POST",
           headers: {
@@ -48,7 +54,7 @@
         }
       });
 
-      yatta.onCheckoutSessionChange(productId, function (checkoutSession) {
+      yatta.onSessionChange(vendorId, function (checkoutSession) {
         if (checkoutSession && checkoutSession.sessionToken) {
           queryLicense(checkoutSession.sessionToken);
         }

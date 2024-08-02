@@ -15,6 +15,7 @@
       yatta.linkAccount({ accountId: currentUserId, email: emailHint });
 
       const productId = '330da901-e116-4ca2-a301-2903552bf51d';
+      // const productId = 'c1bae4a0-3b25-45bf-9d3f-994631dec3cc'; // staging
 
       const queryLicense = async userId => {
         const response = await fetch('http://localhost:8080/queryLicense?userId=' + userId + '&productId=' + productId, { credentials: 'include' });
@@ -43,12 +44,6 @@
         queryLicense(currentUserId);
       });
 
-      yatta.onCheckoutSessionChange(productId, function (checkoutSession) {
-        if (checkoutSession && checkoutSession.sessionToken) {
-          queryLicense(currentUserId);
-        }
-      });
-
       yatta.onAssetStatusChange(
         productId,
         function (assetStatus) {
@@ -56,6 +51,7 @@
         },
         'preview'
       );
+      queryLicense(currentUserId);
     </script>
     <div id="game" style="display: none">
       <canvas id="game-canvas" width="640" height="640"></canvas>

@@ -70,7 +70,7 @@ public class IdeIntrudersBackendApplication
       var jwt = getDecodedJwt(query.sessionToken());
 
       String accountId = jwt.getSubject();
-      String productId = jwt.getClaimAsString("productId");
+      String productId = query.productId();
 
       return checkLicenseServer(accountId, productId);
    }

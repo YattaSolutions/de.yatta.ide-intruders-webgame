@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,20 +21,20 @@ public class SecurityConfig
    private String cookieName;
 
    @Bean
-   public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception
+   SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception
    {
       String resultUrl = "http://localhost:62348/ide-intruders/result.html";
       String defaultLoginUrl = "http://localhost:62348/vendor-login/";
 
       httpSecurity
             .authorizeHttpRequests(requestMatcher -> requestMatcher
-                  .requestMatchers("/public", "/queryLicense", "/login").permitAll()
+                  .requestMatchers("/public", "/queryLicense", "/queryLicenseSession", "/login").permitAll()
                   .anyRequest().authenticated())
-            .cors().and()
-            .csrf().disable()
+            .cors(Customizer.withDefaults())
+            .csrf(csrf -> csrf.disable())
             .oauth2Login(config -> config
                   .defaultSuccessUrl(resultUrl)
-                  .failureUrl(resultUrl + "?error") 
+                  .failureUrl(resultUrl + "?error")
                   .loginPage(defaultLoginUrl)
                   .isCustomLoginPage())
             .logout(logout -> logout
