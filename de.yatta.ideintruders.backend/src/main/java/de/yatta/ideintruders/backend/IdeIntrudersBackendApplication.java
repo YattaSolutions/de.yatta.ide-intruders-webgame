@@ -60,22 +60,23 @@ public class IdeIntrudersBackendApplication
          internalUserId = token.getName();
       }
 
-      return checkLicenseServer(internalUserId, productId);
+      return checkLicenseServer(internalUserId, productId, null);
    }
 
    @PostMapping("/queryLicenseSession")
    @CrossOrigin(origins = "*")
    public boolean queryLicense(@RequestBody LicenseQuery query)
    {
+      // Token verification is implicitly also done here, but can be deferred to the license check requests
       var jwt = getDecodedJwt(query.sessionToken());
 
       String accountId = jwt.getSubject();
       String productId = query.productId();
 
-      return checkLicenseServer(accountId, productId);
+      return checkLicenseServer(accountId, productId, query.sessionToken());
    }
 
-   private boolean checkLicenseServer(String accountId, String productId)
+   private boolean checkLicenseServer(String accountId, String productId, String sessionToken)
    {
       RestTemplate restTemplate = new RestTemplate();
 
@@ -88,6 +89,10 @@ public class IdeIntrudersBackendApplication
       jsonObject.put("productId", productId);
       jsonObject.put("accountId", accountId);
       jsonObject.put("durationMinutes", 120);
+      if (sessionToken != null)
+      {
+         jsonObject.put("sessionToken", sessionToken);
+      }
 
       HttpEntity<String> licenseRequest = new HttpEntity<>(jsonObject.toString(), headers);
 
