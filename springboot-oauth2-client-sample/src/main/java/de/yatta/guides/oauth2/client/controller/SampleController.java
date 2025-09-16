@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/sample")
+@RequestMapping(value = {"/api/v1/sample", "/"})
 @Slf4j
 @RequiredArgsConstructor
 public class SampleController {
@@ -38,7 +38,7 @@ public class SampleController {
         log.info(oauthToken.toString());
         log.info(client.toString());
         String response =
-                String.format("User ID: %s <br> User Email Address: %s <br> User Access Token: %s ",
+                String.format("User ID: %s <br> User Email Address: %s (<a href=\"/logout\">logout</a>)<p>User Access Token: %s</p>",
                         oauthToken.getPrincipal().getName(),
                         oauthToken.getPrincipal().getAttributes().get("email"),
                         client.getAccessToken().getTokenValue());
